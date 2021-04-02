@@ -1,46 +1,7 @@
 ﻿const express = require('express')
 const routes = express.Router()
-
-const Profile = {
-  data: {
-    name: "Jakeliny",
-    avatar: "https://avatars.githubusercontent.com/u/17316392?s=460&u=6912a91a70bc89745a2079fdcdad3bc3ce370f13&v=4",
-    "monthly-budget": 3000,
-    "hours-per-day": 5,
-    "days-per-week": 5,
-    "vacation-per-year": 4,
-    "value-hour": 75
-  },
-
-  controllers: {
-    index (req, res) {
-      return res.render("profile", { profile: Profile.data })
-    },
-
-    update (req, res) {
-      const data = req.body
-      // definir quantas semanas tem num ano
-      const weeksPerYear = 52
-      // remover as semanas de férias do ano, para pegar quantas semanas tem um mês
-      const weeksPerMonth = (weeksPerYear - data["vacation-per-year"]) / 12
-      // total de horas trabalhadas na semana
-      const weekTotalHours = data["hours-per-day"] * data["days-per-week"]
-      // horas trabalhadas no mês
-      const monthlyTotalHours = weekTotalHours * weeksPerMonth
-      // qual o valor da minha hora ?
-      const valueHour = data["monthly-budget"] / monthlyTotalHours
-
-      Profile.data = {
-        ...Profile.data,
-        ...req.body,
-        "value-hour": valueHour
-      }
-
-      return res.redirect('/profile')
-
-    }
-  }
-}
+const ProfileController = require('./controllers/ProfileController')
+const Profile = require('./model/Profile')
 
 const Job = {
   data: [
@@ -70,7 +31,7 @@ const Job = {
           ...job,
           remaining,
           status,
-          budget: Job.services.calculateBudget(job, Profile.data["value-hour"])
+          budget: Job.services.calculateBudget(job, Profile.get()["value-hour"])
         }
       })
       return res.render("index", { jobs: updateJobs })
@@ -104,7 +65,7 @@ const Job = {
         return res.send('Job not found')
       }
 
-      job.budget = Job.services.calculateBudget(job, Profile.data["value-hour"])
+      job.budget = Job.services.calculateBudget(job, Profile.get()["value-hour"])
 
       return res.render("job-edit", { job })
     },
@@ -174,7 +135,7 @@ routes.post('/job', Job.controllers.save)
 routes.get('/job/:id', Job.controllers.show)
 routes.post('/job/:id', Job.controllers.update)
 routes.post('/job/delete/:id', Job.controllers.delete)
-routes.get('/profile', Profile.controllers.index)
-routes.post('/profile', Profile.controllers.update)
+routes.get('/profile', ProfileController.index)
+routes.post('/profile', ProfileController.update)
 
 module.exports = routes
