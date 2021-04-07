@@ -12,25 +12,28 @@
     "daily-hours": 3,
     "total-hours": 47,
     created_at: Date.now(),
-  }
-]
+  },
+];
 
 module.exports = {
-  get () {
-    return data
+  get() {
+    return data;
   },
-  update (jobId, updateJob) {
-    data = data.map(job => {
+  update(jobId, updateJob) {
+    data = data.map((job) => {
       if (Number(job.id) === Number(jobId)) {
-        job = updateJob
+        job = updateJob;
       }
-      return job
-    })
+      return job;
+    });
   },
-  delete (jobId) {
-    data = data.filter(job => Number(job.id) !== Number(jobId))
+  delete(jobId) {
+    data = data.filter((job) => Number(job.id) !== Number(jobId));
   },
-  find (jobId) {
-    return data.find((job) => Number(job.id) === Number(jobId))
-  }
-}
+  find(jobId) {
+    return data.find((job) => Number(job.id) === Number(jobId));
+  },
+  create(newJob) {
+    data.push(newJob);
+  },
+};

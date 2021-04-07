@@ -1,51 +1,49 @@
-﻿const Job = require('../model/Job')
-const JobUtils = require('../utils/JobUtils')
-const Profile = require('../model/Profile')
+﻿const Job = require("../model/Job");
+const JobUtils = require("../utils/JobUtils");
+const Profile = require("../model/Profile");
 
 module.exports = {
-  create (req, res) {
-    return res.render("job")
+  create(req, res) {
+    return res.render("job");
   },
 
-  save (req, res) {
-    const jobs = Job.get()
-    const jobId = jobs[jobs.length - 1]?.id || 0
+  save(req, res) {
+    const jobs = Job.get();
+    const jobId = jobs[jobs.length - 1]?.id || 0;
 
-    jobs.push({
+    Job.create({
       id: jobId + 1,
       name: req.body.name,
       "daily-hours": req.body["daily-hours"],
       "total-hours": req.body["total-hours"],
-      created_at: Date.now()
-    })
+      created_at: Date.now(),
+    });
 
-    return res.redirect('/')
+    return res.redirect("/");
   },
 
-  show (req, res) {
+  show(req, res) {
+    const jobId = req.params.id;
+    const profile = Profile.get();
 
-    const jobId = req.params.id
-    const profile = Profile.get()
-
-    const job = Job.find(jobId)
+    const job = Job.find(jobId);
 
     if (!job) {
-      return res.send('Job not found')
+      return res.send("Job not found");
     }
 
-    job.budget = JobUtils.calculateBudget(job, profile["value-hour"])
+    job.budget = JobUtils.calculateBudget(job, profile["value-hour"]);
 
-    return res.render("job-edit", { job })
+    return res.render("job-edit", { job });
   },
 
-  update (req, res) {
+  update(req, res) {
+    const jobId = req.params.id;
 
-    const jobId = req.params.id
-
-    const job = Job.find(jobId)
+    const job = Job.find(jobId);
 
     if (!job) {
-      return res.send('Job not found')
+      return res.send("Job not found");
     }
 
     const updateJob = {
@@ -53,18 +51,18 @@ module.exports = {
       name: req.body.name,
       "daily-hours": req.body["daily-hours"],
       "total-hours": req.body["total-hours"],
-    }
+    };
 
-    Job.update(jobId, updateJob)
+    Job.update(jobId, updateJob);
 
-    return res.redirect('/job/' + jobId)
+    return res.redirect("/job/" + jobId);
   },
 
-  delete (req, res) {
-    const jobId = req.params.id
+  delete(req, res) {
+    const jobId = req.params.id;
 
-    Job.delete(jobId)
+    Job.delete(jobId);
 
-    return res.redirect('/')
-  }
-}
+    return res.redirect("/");
+  },
+};
