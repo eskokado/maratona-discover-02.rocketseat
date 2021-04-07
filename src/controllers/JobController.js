@@ -22,9 +22,9 @@ module.exports = {
     return res.redirect("/");
   },
 
-  show(req, res) {
+  async show(req, res) {
     const jobId = req.params.id;
-    const profile = Profile.get();
+    const profile = await Profile.get();
 
     const job = Job.find(jobId);
 
