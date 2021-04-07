@@ -12,7 +12,7 @@ const initDb = {
         monthly_budget INT,
         days_per_week INT,
         hours_per_day INT,
-        vocation_per_year INT,
+        vacation_per_year INT,
         value_hour INT
       );
     `);
@@ -34,7 +34,7 @@ const initDb = {
         monthly_budget, 
         days_per_week, 
         hours_per_day, 
-        vocation_per_year, 
+        vacation_per_year, 
         value_hour
       ) VALUES (
         "Jakeliny",
